@@ -28,60 +28,233 @@
 
 ## Задание 1
 ### в проекте Unity реализовать перцептрон, который умеет производить вычисления:
-### OR | дать комментарии о корректности работы
-### AND | дать комментарии о корректности работы
-### NAND | дать комментарии о корректности работы
-### XOR | дать комментарии о корректности работы
+### OR | 0+0=0 0+1=1 1+0=1 1+1=1
+### AND | 0+0=0 0+1=0 1+0=0 1+1=1
+### NAND | 0+0=1 0+1=1 1+0=1 1+1=0
+### XOR | 0+0=0 0+1=1 1+0=1 1+1=0
 
 Ход работы:
-- Я проанализировала в проекте Unity варианты возможного усложнения переменных и решила увеличивать (или уменьшать) все переменные одновременно. Я нашла максимально усложненный и играбельный(для меня) вариант и, отталкиваясь от него, подобрала значения для 2-9 уровней.
+- 
 
-![image](https://github.com/knightalli/DAinGD-lab3/assets/127225486/5a54c2f1-2551-4523-8409-c594f13b1f40)
+```cs
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+[System.Serializable]
+public class TrainingSet
+{
+    public double[] input;
+    public double output;
+}
+
+public class Perceptron : MonoBehaviour
+{
+
+    public TrainingSet[] ts;
+    double[] weights = { 0, 0 };
+    double bias = 0;
+    double totalError = 0;
+
+    double DotProductBias(double[] v1, double[] v2)
+    {
+        if (v1 == null || v2 == null)
+            return -1;
+
+        if (v1.Length != v2.Length)
+            return -1;
+
+        double d = 0;
+        for (int x = 0; x < v1.Length; x++)
+        {
+            d += v1[x] * v2[x];
+        }
+
+        d += bias;
+
+        return d;
+    }
+
+    double CalcOutput(int i)
+    {
+        double dp = DotProductBias(weights, ts[i].input);
+        if (dp > 0) return (1);
+        return (0);
+    }
+
+    void InitialiseWeights()
+    {
+        for (int i = 0; i < weights.Length; i++)
+        {
+            weights[i] = Random.Range(-1.0f, 1.0f);
+        }
+        bias = Random.Range(-1.0f, 1.0f);
+    }
+
+    void UpdateWeights(int j)
+    {
+        double error = ts[j].output - CalcOutput(j);
+        totalError += Mathf.Abs((float)error);
+        for (int i = 0; i < weights.Length; i++)
+        {
+            weights[i] = weights[i] + error * ts[j].input[i];
+        }
+        bias += error;
+    }
+
+    double CalcOutput(double i1, double i2)
+    {
+        double[] inp = new double[] { i1, i2 };
+        double dp = DotProductBias(weights, inp);
+        if (dp > 0) return (1);
+        return (0);
+    }
+
+    void Train(int epochs)
+    {
+        InitialiseWeights();
+
+        for (int e = 0; e < epochs; e++)
+        {
+            totalError = 0;
+            for (int t = 0; t < ts.Length; t++)
+            {
+                UpdateWeights(t);
+                Debug.Log("W1: " + (weights[0]) + " W2: " + (weights[1]) + " B: " + bias);
+            }
+            Debug.Log("TOTAL ERROR: " + totalError);
+        }
+    }
+
+    void Start()
+    {
+        Train(8);
+        Debug.Log("Test 0 0: " + CalcOutput(0, 0));
+        Debug.Log("Test 0 1: " + CalcOutput(0, 1));
+        Debug.Log("Test 1 0: " + CalcOutput(1, 0));
+        Debug.Log("Test 1 1: " + CalcOutput(1, 1));
+    }
+
+    void Update()
+    {
+
+    }
+}
+```
 
 ## Задание 2
 ###  Построить графики зависимости количества эпох от ошибки  обучения. Указать от чего зависит необходимое количество эпох обучения.
 Ход работы:
-- Я продублировала сцену и поменяла переменные "Speed", "TimeBetweenEgg", "LeftRightDistance", "ChanceDirection".
+- 
 
-![image](https://github.com/knightalli/DAinGD-lab3/assets/127225486/730f9bbd-b682-4234-9e13-abc6d9ae7e18)
+
 
 
 ## Задание 3
 ### Построить визуальную модель работы перцептрона на сцене Unity.
 Ход работы:
-- Я создала новую таблицу, подключила API и вставила данные, которые получила в первом задании. Также я добавила рандомное число для того, чтобы каждую загрузку слегка отличались значения переменных, но не так сильно, чтобы это слишком влияло на игру.
+- 
 
-```py
-import gspread
-import numpy as np
-gc = gspread.service_account(filename='work4-402209-5356a8a03952.json')
-sh = gc.open("UnityWorkShop 3")
-speed = 4.00
-timeEgg = 2.00
-lrDist = 10.00
-chanceDir = 0.01
-i = 0
-end = 8
-while i <= end:   
-    tempRand = np.random.randint(-100, 100, 3)    
-    i += 1
-    if i == 0:
-        continue
-    else:        
-        sh.sheet1.update(('A' + str(i+2)), speed+2.3*i+(tempRand[0]/1000))
-        sh.sheet1.update(('B' + str(i+2)), timeEgg-0.15*i+(tempRand[1]/1000))
-        sh.sheet1.update(('C' + str(i+2)), lrDist+0.5*i+(tempRand[2]/1000))
-        sh.sheet1.update(('D' + str(i+2)), chanceDir+0.0005*i)
-        sh.sheet1.update(('E' + str(i+1)), i)
-        print('ok')
+```cs
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
+public class ChangeColor : MonoBehaviour
+{
+    [SerializeField] private int numberType;
+    private Material material;
+    [SerializeField] private int numberTrigger;
+    [SerializeField] private Material[] materials;
+
+    void Start()
+    {
+        material = gameObject.GetComponent<MeshRenderer>().material;
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (SceneManager.GetActiveScene().buildIndex == 0) ORScene();
+        if (SceneManager.GetActiveScene().buildIndex == 1) ANDScene();
+        if (SceneManager.GetActiveScene().buildIndex == 2) NANDScene();
+        if (SceneManager.GetActiveScene().buildIndex == 3) XORScene();
+        Destroy(other.gameObject);
+    }
+
+    private void ORScene()
+    {
+        if (numberType == 0)
+        {
+            if (numberTrigger == 0) material.color = materials[0].color;
+            else if (numberTrigger == 1) material.color = materials[1].color;
+        }
+
+        if (numberType == 1)
+        {
+            if (numberTrigger == 0) material.color = materials[1].color;
+            else if (numberTrigger == 1) material.color = materials[1].color;
+        }
+    }
+
+    private void ANDScene()
+    {
+        if (numberType == 0)
+        {
+            if (numberTrigger == 0) material.color = materials[0].color;
+            else if (numberTrigger == 1) material.color = materials[0].color;
+        }
+
+        if (numberType == 1)
+        {
+            if (numberTrigger == 0) material.color = materials[0].color;
+            else if (numberTrigger == 1) material.color = materials[1].color;
+        }
+    }
+
+    private void NANDScene()
+    {
+        if (numberType == 0)
+        {
+            if (numberTrigger == 0) material.color = materials[1].color;
+            else if (numberTrigger == 1) material.color = materials[1].color;
+        }
+
+        if (numberType == 1)
+        {
+            if (numberTrigger == 0) material.color = materials[1].color;
+            else if (numberTrigger == 1) material.color = materials[0].color;
+        }
+    }
+
+    private void XORScene()
+    {
+        if (numberType == 0)
+        {
+            if (numberTrigger == 0) material.color = materials[0].color;
+            else if (numberTrigger == 1) material.color = materials[1].color;
+        }
+
+        if (numberType == 1)
+        {
+            if (numberTrigger == 0) material.color = materials[1].color;
+            else if (numberTrigger == 1) material.color = materials[0].color;
+        }
+    }
+}
 ```
 
-![image](https://github.com/knightalli/DAinGD-lab3/assets/127225486/6b4ddf02-7a79-489e-8555-17826b373248)
 
 
 ## Выводы
 
-Я создала 10 сцен в игре Dragon Picker, проанализировала входные данные. Попробовала разные изменения переменных и создала уровни с разными сложностями. Ещё раз заполнила таблицу с помощью Python. 
+
 
 
 | Plugin | README |
