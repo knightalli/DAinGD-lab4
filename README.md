@@ -34,7 +34,7 @@
 ### XOR | 0+0=0 0+1=1 1+0=1 1+1=0
 
 Ход работы:
-- 
+- Создала проект Unity и добавила туда скрипт Perceptron, добавила его на пустой GameObject и просмотрела, как действует Console. 
 
 ```cs
 using System.Collections;
@@ -249,11 +249,12 @@ public class ChangeColor : MonoBehaviour
     }
 }
 ```
+![4ad](https://github.com/knightalli/DAinGD-lab4/assets/127225486/cbd4144b-6572-4bd3-9a9a-aa3a423d8aac)
 
 
 
 ## Выводы
-
+Я научилась реализовывать персептрон на Unity3D. Также проанализировала эпохи и построила график. Также с помощью кубиков провизуализировала действия логик OR, AND, NAND, XOR.
 
 
 
