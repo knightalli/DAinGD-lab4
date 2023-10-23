@@ -34,7 +34,6 @@ public class ChangeColor : MonoBehaviour
     {
         if (numberType == 0)
         {
-            print(numberTrigger);
             if (numberTrigger == 0) material.color = materials[0].color;
             else if (numberTrigger == 1) material.color = materials[1].color;
         }
